@@ -2,23 +2,21 @@ from task import Task
 import random
 import os
 
-
-cur_dir_path = os.path.dirname(os.path.realpath(__file__))
 last_name = "martsich"
 
 
 class Generator:
 
-    def __init__(self, dir_name):
+    def __init__(self, dir_path):
         """
 
-        :param dir_name: Directory name where to store your test data
+        :param dir_path: Directory path where to store your test data
         """
-        self.dir_name = dir_name
-        if not os.path.isdir(os.path.join(cur_dir_path, dir_name)):
-            print(f"No such directory in current folder: {dir_name}. Creating...")
-            os.mkdir(os.path.join(cur_dir_path, dir_name))
-            print(f"Directory {dir_name} has been created")
+        self.dir_path = dir_path
+        if not os.path.isdir(dir_path):
+            print(f"No such directory: {dir_path}. Creating...")
+            os.mkdir(dir_path)
+            print(f"Directory {dir_path} has been created")
         self.tasks = []
         self.n = 0
 
@@ -41,7 +39,7 @@ class Generator:
         result = [f"{self.n}"]
         for task in self.tasks:
             result.append(str(task))
-        with open(os.path.join(cur_dir_path, self.dir_name, f"in_{last_name}_{self.n}.txt"), "w") as file:
+        with open(os.path.join(self.dir_path, f"in_{last_name}_{self.n}.txt"), "w") as file:
             file.write("\n".join(result))
 
 
