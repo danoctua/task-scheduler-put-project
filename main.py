@@ -1,6 +1,6 @@
 from task_scheduler.generator import Generator
 from task_scheduler.validator import Validator
-from task_scheduler.engine import Engine
+from task_scheduler.engine import Engine, upload_tasks
 import os
 import sys
 from task_scheduler.task import Task
@@ -10,20 +10,7 @@ cur_dir_path = os.path.dirname(os.path.realpath(__file__))
 last_name_ = "martsich"
 
 
-def upload_tasks(input_str: str) -> list:
-    lines = input_str.split("\n")
-    result = []
-    n = lines[0]
-    try:
-        n = int(n)
-    except ValueError:
-        print("Wrong instances count")
-        return result
-    for idx in range(1, n+1):
-        new_task = Task()
-        new_task.parse_input(idx, lines[idx])
-        result.append(new_task)
-    return result
+# test functions
 
 
 def generate():
@@ -45,7 +32,7 @@ def test_validate():
 
 
 def test_engine(instance_size):
-    last_name = last_name_
+    last_name = "Jaskulski"
     test_path = f"data/in_{last_name}_{instance_size}.txt"
     with open(test_path, "r") as file:
         tasks = upload_tasks(file.read())
@@ -70,8 +57,14 @@ def generate_output():
         test_engine(instance_size)
 
 
-def run_validate(last_name):
-    for instance_size in range(50, 501, 50):
+# Working functions
+
+
+def run_validate(last_name, instance_size=None):
+    start = instance_size or 50
+    finish = instance_size or 500
+    step = 50
+    for instance_size in range(start, finish + 1, step):
         in_path = f"data/in_{last_name}_{instance_size}.txt"
         with open(in_path, "r") as file:
             tasks = upload_tasks(file.read())
@@ -81,12 +74,34 @@ def run_validate(last_name):
         validator = Validator(tasks=tasks, order=order)
         result = validator.validate(int(value))
         print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
-    return
+
+
+def run_process(last_name, instance_size=None):
+    start = instance_size or 50
+    finish = instance_size or 500
+    step = 50
+    for instance_size in range(start, finish + 1, step):
+        test_path = f"data/in_{last_name}_{instance_size}.txt"
+        with open(test_path, "r") as file:
+            tasks = upload_tasks(file.read())
+        engine = Engine(tasks=tasks, instance_size=instance_size)
+        engine.run()
+        engine.save_to_file(f"data/out_{last_name}_{instance_size}.txt")
+        print(f"Processed for instance of {instance_size}")
+
+
+def run_generate(last_name, instance_size=None):
+    start = instance_size or 50
+    finish = instance_size or 500
+    step = 50
+    generator = Generator("data", last_name)
+    for instance_size in range(start, finish + 1, step):
+        generator.run(instance_size)
 
 
 if __name__ == '__main__':
     # test_validate()
     # generate_test_out()
     # generate()
-    # test_engine(50)
-    generate_output()
+    test_engine(50)
+    # generate_output()

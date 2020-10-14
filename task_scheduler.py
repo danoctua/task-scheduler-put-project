@@ -1,20 +1,30 @@
+from abc import ABC
+
 from main import *
+from task_scheduler.cli import CLI
 
 
-def parse_argv(argv):
-    last_name = None
-    action = None
-    try:
-        last_name_idx = argv.index("--who")
-        try:
-            last_name = argv[last_name_idx + 1]
-            run_validate(last_name)
-        except:
-            pass
-    except:
-        pass
-    return action, last_name
+class MyCLI(CLI, ABC):
+    """
+    Use inheritance to override your validate, process, generate methods
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def validate(self):
+        run_validate(last_name=self.last_name, instance_size=self.instance_size)
+
+    def process(self):
+        run_process(last_name=self.last_name, instance_size=self.instance_size)
+
+    def generate(self):
+        run_generate(last_name=self.last_name, instance_size=self.instance_size)
+
+
+def main():
+    cli = MyCLI()
 
 
 if __name__ == '__main__':
-    parse_argv(sys.argv[1:])
+    main()
