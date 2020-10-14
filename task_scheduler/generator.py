@@ -1,4 +1,4 @@
-from task import Task
+from task_scheduler.task import Task
 import random
 import os
 

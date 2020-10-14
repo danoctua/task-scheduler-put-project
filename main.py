@@ -1,9 +1,9 @@
-from task_generator import Generator
-from task_validator import Validator
-from task_engine import Engine
+from task_scheduler.generator import Generator
+from task_scheduler.validator import Validator
+from task_scheduler.engine import Engine
 import os
 import sys
-from task import Task
+from task_scheduler.task import Task
 
 cur_dir_path = os.path.dirname(os.path.realpath(__file__))
 
