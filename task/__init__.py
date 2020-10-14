@@ -16,18 +16,18 @@ class Task:
             self.d_time = args[3]
             self.w = args[4]
 
-    def parse_input(self, input_str, separator=" ", to_int=True):
+    def parse_input(self, task_id, input_str, separator=" ", to_int=True):
         params = input_str.split(separator)
-        if len(params) < 5:
+        if len(params) < 4:
             raise AttributeError("Not enough parameters in line")
         if to_int:
             for idx, item in enumerate(params):
                 params[idx] = int(item)
-        self.task_id = params[0]
-        self.p_time = params[1]
-        self.r_time = params[2]
-        self.d_time = params[3]
-        self.w = params[4]
+        self.task_id = task_id
+        self.p_time = params[0]
+        self.r_time = params[1]
+        self.d_time = params[2]
+        self.w = params[3]
         return
 
     def __str__(self, separator: str = " ", idx_include: bool = False):
