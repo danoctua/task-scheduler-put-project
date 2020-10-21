@@ -22,5 +22,5 @@ class Validator:
 
     def validate(self, value: int):
         result = self.calculate()
-        return result == value and len(set(self.order)) == len(self.order)
+        return result == value and len(set(self.order)) == len(self.order), result
 

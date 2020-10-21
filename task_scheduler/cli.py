@@ -1,8 +1,9 @@
 import abc
 import sys
 import time
-import os
-from subprocess import call, check_output
+from subprocess import check_output
+
+"""How to use? See example in task_scheduler.py"""
 
 
 class CLI:
@@ -27,6 +28,7 @@ class CLI:
     input_file = None
     output_file = None
     code_path = None
+    test_mode = False
 
     def __init__(self):
         argv = sys.argv
@@ -41,6 +43,8 @@ class CLI:
                 self.last_name = argv[last_name_idx + 1]
             except:
                 pass
+        if "--test" in argv:
+            self.test_mode = True
         if "-v" in argv:
             self.input_file = argv[-1]
             self.validate()
@@ -80,6 +84,7 @@ class CLI:
         return
 
     def run_algorithm(self):
+        """Run other author algorithm, placed in codes directory (see below)"""
         start_time = time.time()
         if self.code_path.split(".")[-1] == "py":
             python_command = "python" if sys.platform == "win32" else "python3"

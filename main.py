@@ -60,20 +60,26 @@ def generate_output():
 # Working functions
 
 
-def run_validate(last_name, instance_size=None):
+def run_validate(last_name, instance_size=None, test_mode=False):
     start = instance_size or 50
     finish = instance_size or 500
     step = 50
+    if test_mode:
+        out_last_name = "test"
+    else:
+        out_last_name = last_name
     for instance_size in range(start, finish + 1, step):
         in_path = f"data/in_{last_name}_{instance_size}.txt"
         with open(in_path, "r") as file:
             tasks = upload_tasks(file.read())
-        out_path = f"data/out_{last_name}_{instance_size}.txt"
+
+        out_path = f"data/out_{out_last_name}_{instance_size}.txt"
         with open(out_path, "r") as file:
             value, order = file.read().splitlines()[:2]
         validator = Validator(tasks=tasks, order=order)
         result = validator.validate(int(value))
-        print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
+        print(result[1])
+        # print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
 
 
 def run_process(last_name, instance_size=None):
