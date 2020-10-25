@@ -68,6 +68,7 @@ class MyCLI(CLI, ABC):
         else:
             instances_to_check = list(range(50, 501, 50))
         for last_name_ in algo_to_check:
+            last_name_data_check = "Jaskulski"
             print("\n{:^50}\n".format(last_name_))
             for instance_size in instances_to_check:
                 print(f"# Processing {last_name_} code for instance of {instance_size}")
@@ -80,7 +81,7 @@ class MyCLI(CLI, ABC):
                         python_command = "python" if sys.platform == "win32" else "python3"
                         res = check_output([python_command,
                                             f"codes/{last_name_}.py",
-                                            f"data/in_{last_name_}_{instance_size}.txt",
+                                            f"data/in_{last_name_data_check}_{instance_size}.txt",
                                             f"data"])
                         # print(res.decode("utf-8"))
 
@@ -88,14 +89,14 @@ class MyCLI(CLI, ABC):
                         res = check_output(["java",
                                             "-jar",
                                             f"codes/{last_name_}.jar",
-                                            f"data/in_{last_name_}_{instance_size}.txt",
+                                            f"data/in_{last_name_data_check}_{instance_size}.txt",
                                             f"data"])
                     else:
                         error = "No code file"
                     timestamp = time.time() - start_time
                     print(f"Finished in {timestamp} sec")
                     if not error:
-                        result = run_validate(last_name=last_name_, instance_size=instance_size)
+                        result = run_validate(last_name=last_name_data_check, instance_size=instance_size)
 
                 except Exception as exp:
                     error = exp
