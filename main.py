@@ -64,6 +64,7 @@ def run_validate(last_name, instance_size=None, test_mode=False):
     start = instance_size or 50
     finish = instance_size or 500
     step = 50
+    result = ()
     if test_mode:
         out_last_name = "test"
     else:
@@ -78,8 +79,9 @@ def run_validate(last_name, instance_size=None, test_mode=False):
             value, order = file.read().splitlines()[:2]
         validator = Validator(tasks=tasks, order=order)
         result = validator.validate(int(value))
-        print(result[1])
-        # print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
+        print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
+    if instance_size:
+        return result
 
 
 def run_process(last_name, instance_size=None):

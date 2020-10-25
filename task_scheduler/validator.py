@@ -6,9 +6,14 @@ class Validator:
         order_split = order.split(separator)
         self.order = []
         for idx in order_split:
-            self.order.append(int(idx))
+            if idx.isdigit():
+                self.order.append(int(idx))
 
     def calculate(self) -> int:
+        """
+
+        :return: calculated value of criteria
+        """
         cur_time = 0
         result = 0
         for task_id in self.order:
@@ -20,7 +25,12 @@ class Validator:
         self.value = result
         return result
 
-    def validate(self, value: int):
+    def validate(self, value: int) -> tuple:
+        """
+
+        :param value: validate calculated value with provided one
+        :return: tuple: is format valid, is calculated value equal to value in the file, calculated value
+        """
         result = self.calculate()
-        return result == value and len(set(self.order)) == len(self.order), result
+        return len(set(self.order)) == len(self.order), result == value, result
 

@@ -69,13 +69,12 @@ class Engine:
 
     def run(self) -> list:
 
-        # This part of code below is LICENCED so you can't copy it into the project...
+        # This part of code below is LICENCED so you can't copy it into your project...
 
         def get_next(cur_tasks, cur_time):
             if len(cur_tasks) < 1:
                 return None, []
             cur_tasks = list(sorted(cur_tasks, key=lambda x: (x.d_time - x.p_time < cur_time, x.r_time)))
-            # print(cur_time, cur_tasks[0], [x.__str__() for x in cur_tasks[1:]])
             return cur_tasks[0], cur_tasks[1:]
 
         next_task, tasks = get_next(cur_tasks=self.tasks, cur_time=self.cur_time)
@@ -100,13 +99,17 @@ class Engine:
 
 
 if __name__ == '__main__':
-    path_file = os.path.join("data", sys.argv[-1])
+    path_file = sys.argv[-2]
+    save_dir = sys.argv[-1]
     if os.path.exists(path_file):
         with open(path_file, "r") as file:
             tasks = upload_tasks(file.read())
+        filename = os.path.split(path_file)[-1]
         engine = Engine(tasks=tasks, instance_size=len(tasks))
         engine.run()
-        engine.save_to_file(path_file.replace("in", "out"))
+        print(engine.result)
+        engine.save_to_file(os.path.join(save_dir, filename.replace("in", "out")))
         print(f"Processed for instance from {path_file}")
     else:
-        print("File doesn't exists")
+        print(path_file)
+        print("Input instance file doesn't exists")

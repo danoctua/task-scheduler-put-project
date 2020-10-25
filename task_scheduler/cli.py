@@ -1,8 +1,5 @@
 import abc
 import sys
-import time
-from subprocess import check_output
-
 """How to use? See example in task_scheduler.py"""
 
 
@@ -24,9 +21,10 @@ class CLI:
         python3 main.py --who kowalski
         """
     last_name = None
+    last_names = []
     instance_size = None
     input_file = None
-    output_file = None
+    output_dir = None
     code_path = None
     test_mode = False
 
@@ -43,9 +41,17 @@ class CLI:
                 self.last_name = argv[last_name_idx + 1]
             except:
                 pass
+        if "--who-list" in argv:
+            last_names_idx = argv.index("--who-list")
+            try:
+                for x in range(last_names_idx+1, len(argv)):
+                    self.last_names.append(argv[x])
+            except Exception as exp:
+                print(exp)
         if "--test" in argv:
             self.test_mode = True
         if "-v" in argv:
+
             self.input_file = argv[-1]
             self.validate()
         elif "-g" in argv:
@@ -55,8 +61,12 @@ class CLI:
             self.input_file = argv[-1]
             self.process()
         elif "-r" in argv:
-            self.code_path = argv[-2]
-            self.input_file = argv[-1]
+            if len(argv) - argv.index("-r") - 1 == 2:
+                self.code_path = argv[-2]
+                self.input_file = argv[-1]
+            elif not self.last_name and not self.last_names:
+                print("ERROR! Wrong arguments: -r code_file input_file_name or --who last_name")
+                quit(-1)
             self.run_algorithm()
         else:
             print("UNKNOWN MODE\n"
@@ -83,18 +93,7 @@ class CLI:
         """Override this method"""
         return
 
+    @abc.abstractmethod
     def run_algorithm(self):
-        """Run other author algorithm, placed in codes directory (see below)"""
-        start_time = time.time()
-        if self.code_path.split(".")[-1] == "py":
-            python_command = "python" if sys.platform == "win32" else "python3"
-            res = check_output([python_command, f"codes/{self.code_path}", f"{self.input_file}"])
-            print(res.decode("utf-8"))
-        elif self.input_file.split(".")[-1] == "jar":
-            # TODO java execution
-            pass
-        else:
-            print("Unknown file extension. Usage: python3 [your_main_file.py] -r [code_file] [instance_file]")
-        timestamp = time.time() - start_time
-        print(f"Finished in {timestamp} sec")
+        """Override this method"""
         return
