@@ -26,13 +26,14 @@ class MyCLI(CLI, ABC):
             valid_ls = []
             equal_ls = []
             criteria_ls = []
+            start = self.instance_size or 50
+            finish = self.instance_size or 500 + 1
             for last_name_ in self.last_names:
-                if not self.instance_size:
-                    for i_size in range(50, 501, 50):
-                        result = run_validate(last_name=last_name_, instance_size=i_size, test_mode=self.test_mode)
-                        valid_ls.append(result[0])
-                        equal_ls.append(result[1])
-                        criteria_ls.append(result[2])
+                for i_size in range(start, finish, 50):
+                    result = run_validate(last_name=last_name_, instance_size=i_size, test_mode=self.test_mode)
+                    valid_ls.append(result[0])
+                    equal_ls.append(result[1])
+                    criteria_ls.append(result[2])
             save_to_csv(last_names=self.last_names, calculated=criteria_ls, valid=valid_ls, equal=equal_ls,
                         instances=[self.instance_size] if self.instance_size else list(range(50, 501, 50)),
                         measures=[None for _ in range(len(valid_ls))],
@@ -68,7 +69,7 @@ class MyCLI(CLI, ABC):
         else:
             instances_to_check = list(range(50, 501, 50))
         for last_name_ in algo_to_check:
-            last_name_data_check = "Jaskulski"
+            last_name_data_check = "chalasiak"
             print("\n{:^50}\n".format(last_name_))
             for instance_size in instances_to_check:
                 print(f"# Processing {last_name_} code for instance of {instance_size}")
@@ -83,7 +84,7 @@ class MyCLI(CLI, ABC):
                                             f"codes/{last_name_}.py",
                                             f"data/in_{last_name_data_check}_{instance_size}.txt",
                                             f"data"])
-                        # print(res.decode("utf-8"))
+                        print(res.decode("utf-8"))
 
                     elif os.path.isfile(f"codes/{last_name_}.jar"):
                         res = check_output(["java",

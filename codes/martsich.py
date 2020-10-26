@@ -74,7 +74,7 @@ class Engine:
         def get_next(cur_tasks, cur_time):
             if len(cur_tasks) < 1:
                 return None, []
-            cur_tasks = list(sorted(cur_tasks, key=lambda x: (x.d_time - x.p_time < cur_time, x.r_time)))
+            cur_tasks = list(sorted(cur_tasks, key=lambda x: (x.d_time - x.p_time < cur_time, x.d_time, -x.w)))
             return cur_tasks[0], cur_tasks[1:]
 
         next_task, tasks = get_next(cur_tasks=self.tasks, cur_time=self.cur_time)

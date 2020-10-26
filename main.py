@@ -79,6 +79,7 @@ def run_validate(last_name, instance_size=None, test_mode=False):
             value, order = file.read().splitlines()[:2]
         validator = Validator(tasks=tasks, order=order)
         result = validator.validate(int(value))
+        # validator.show_description()
         print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
     if instance_size:
         return result

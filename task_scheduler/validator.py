@@ -9,6 +9,15 @@ class Validator:
             if idx.isdigit():
                 self.order.append(int(idx))
 
+    def show_description(self):
+        result = []
+        cur_time = 0
+        for idx in self.order:
+            task = self.tasks[idx-1]
+            cur_time = max(task.r_time + task.p_time, cur_time + task.p_time)
+            result.append(f"[#{task.r_time}..{cur_time - task.p_time}..{task.w}..{cur_time}..{task.d_time}]")
+        print(" ".join(result))
+
     def calculate(self) -> int:
         """
 
