@@ -1,5 +1,6 @@
 import sys
 import os
+import collections
 
 
 class Task:
@@ -34,6 +35,9 @@ class Task:
         self.w = params[3]
         return
 
+    def too_late(self, start):
+        return self.p_time + start > self.d_time
+
     def __str__(self, separator: str = " ", idx_include: bool = False):
         if idx_include:
             result = f"{self.task_id}" + separator
@@ -49,7 +53,7 @@ def upload_tasks(input_str: str) -> list:
     try:
         n = int(n)
     except ValueError:
-        print("Wrong instances count")
+        print("Wrong instances number")
         return result
     for idx in range(1, n+1):
         new_task = Task()
@@ -71,24 +75,49 @@ class Engine:
 
         # This part of code below is LICENCED so you can't copy it into your project...
 
-        def get_next(cur_tasks, cur_time):
-            if len(cur_tasks) < 1:
-                return None, []
-            cur_tasks = list(sorted(cur_tasks, key=lambda x: (x.d_time - x.p_time < cur_time, x.d_time, -x.w)))
-            return cur_tasks[0], cur_tasks[1:]
+        # sort by a) already missed due time, b) due time, c) weight (desc)
+        tasks = list(sorted(self.tasks, key=lambda x: (x.d_time, -x.w)))
 
-        next_task, tasks = get_next(cur_tasks=self.tasks, cur_time=self.cur_time)
+        def get_next(cur_tasks: list, to_pass: list, cur_time: int):
+            """
+            Get next task to schedule from task list
+            :param cur_tasks: list of Task objects to schedule
+            :param cur_time: current time after scheduling previous tasks
+            :return: tuple : [0] - next task, [1] - list of tasks to schedule
+            """
+            if len(cur_tasks) < 1:
+                return None, [], to_pass
+
+            idx = 0
+            found = False
+            for idx, task in enumerate(cur_tasks):
+                if task.too_late(cur_time):
+                    to_pass.append(task)
+                    self.result += task.w
+                    continue
+                else:
+                    found = True
+                    break
+            if found:
+                return cur_tasks[idx], cur_tasks[idx+1:], to_pass
+            else:
+                return None, [], to_pass
+
+        next_task, tasks, passed_tasks = get_next(cur_tasks=tasks, to_pass=[], cur_time=self.cur_time)
         self.cur_time += (next_task.p_time + next_task.r_time)
-        tasks_sorted = [next_task]
+        tasks_scheduled = [next_task]
         while next_task:
-            next_task, tasks = get_next(cur_tasks=tasks, cur_time=self.cur_time)
+            next_task, tasks, passed_tasks = get_next(cur_tasks=tasks, to_pass=passed_tasks, cur_time=self.cur_time)
+            # if no task - end loop
             if not next_task:
                 continue
+            # set current time after scheduling task
             self.cur_time = max(self.cur_time + next_task.p_time, next_task.p_time + next_task.r_time)
-            if next_task.d_time < self.cur_time:
-                self.result += next_task.w
-            tasks_sorted.append(next_task)
-        self.order = [task.task_id for task in tasks_sorted]
+            tasks_scheduled.append(next_task)
+
+        tasks_scheduled += passed_tasks
+
+        self.order = [task.task_id for task in tasks_scheduled]
         return self.order
 
     def save_to_file(self, file_path):
@@ -98,7 +127,7 @@ class Engine:
             file.write(result)
 
 
-if __name__ == '__main__':
+def task_scheduling():
     path_file = sys.argv[-2]
     save_dir = sys.argv[-1]
     if os.path.exists(path_file):
@@ -107,9 +136,12 @@ if __name__ == '__main__':
         filename = os.path.split(path_file)[-1]
         engine = Engine(tasks=tasks, instance_size=len(tasks))
         engine.run()
-        print(engine.result)
         engine.save_to_file(os.path.join(save_dir, filename.replace("in", "out")))
         print(f"Processed for instance from {path_file}")
     else:
         print(path_file)
         print("Input instance file doesn't exists")
+
+
+if __name__ == '__main__':
+    task_scheduling()

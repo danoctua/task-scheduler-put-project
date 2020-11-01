@@ -69,7 +69,7 @@ class MyCLI(CLI, ABC):
         else:
             instances_to_check = list(range(50, 501, 50))
         for last_name_ in algo_to_check:
-            last_name_data_check = "chalasiak"
+            last_name_data_check = "martsich"
             print("\n{:^50}\n".format(last_name_))
             for instance_size in instances_to_check:
                 print(f"# Processing {last_name_} code for instance of {instance_size}")
@@ -91,7 +91,7 @@ class MyCLI(CLI, ABC):
                                             "-jar",
                                             f"codes/{last_name_}.jar",
                                             f"data/in_{last_name_data_check}_{instance_size}.txt",
-                                            f"data"])
+                                            f"data/"])
                     else:
                         error = "No code file"
                     timestamp = time.time() - start_time
@@ -104,11 +104,20 @@ class MyCLI(CLI, ABC):
                 valid_ls.append(result[0])
                 equal_ls.append(result[1])
                 criteria_ls.append(result[2])
-                measures_ls.append(timestamp)
+                measures_ls.append(timestamp.__str__().replace(".", ","))
                 errors_ls.append(error)
+            clean_after(out_dir="data", last_name_to_clean=last_name_data_check)
 
         save_to_csv(last_names=algo_to_check, instances=instances_to_check, measures=measures_ls,
                     valid=valid_ls, equal=equal_ls, calculated=criteria_ls, errors=errors_ls)
+
+
+def clean_after(out_dir, last_name_to_clean):
+    for instance_size in range(50, 501, 50):
+        path = os.path.join(out_dir, f"out_{last_name_to_clean}_{instance_size}.txt")
+        if os.path.isfile(path):
+            os.remove(path)
+    print(f"Cleaned for {last_name_to_clean}")
 
 
 def save_to_csv(last_names, instances, measures, valid, equal, calculated, errors):
