@@ -75,15 +75,17 @@ class Engine:
 
         # This part of code below is LICENCED so you can't copy it into your project...
 
-        # sort by a) already missed due time, b) due time, c) weight (desc)
+        # sort by a) due time, b) weight (desc)
         tasks = list(sorted(self.tasks, key=lambda x: (x.d_time, -x.w)))
 
         def get_next(cur_tasks: list, to_pass: list, cur_time: int):
             """
             Get next task to schedule from task list
             :param cur_tasks: list of Task objects to schedule
+            :param to_pass: list of tasks to pass (append to this list new tasks to pass and return)
             :param cur_time: current time after scheduling previous tasks
-            :return: tuple : [0] - next task, [1] - list of tasks to schedule
+            :return: tuple : [0] - next task, [1] - list of tasks to schedule,
+                                [2] - list of tasks to pass and append to the end
             """
             if len(cur_tasks) < 1:
                 return None, [], to_pass
@@ -122,8 +124,7 @@ class Engine:
 
     def save_to_file(self, file_path):
         with open(file_path, "w") as file:
-            result = f"{self.result}\n"
-            result += " ".join([str(x) for x in self.order])
+            result = f"{self.result}\n" + " ".join([str(x) for x in self.order])
             file.write(result)
 
 

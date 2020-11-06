@@ -27,9 +27,19 @@ class CLI:
     output_dir = None
     code_path = None
     test_mode = False
+    mode = 1
 
     def __init__(self):
         argv = sys.argv
+        if "--mode" in argv:
+            try:
+                self.mode = int(argv[argv.index("--mode") + 1])
+            except Exception as exp:
+                print(exp)
+                exit(1)
+        else:
+            print("ERROR!No mode provided. Provide using --mode [MODE_INT] argument and try again")
+            exit(1)
         if "--size" in argv:
             try:
                 self.instance_size = int(argv[argv.index("--size") + 1])

@@ -47,7 +47,7 @@ class MyCLI(CLI, ABC):
 
     def generate(self):
         """Overriding the abstract method"""
-        run_generate(last_name=self.last_name, instance_size=self.instance_size)
+        run_generate(last_name=self.last_name, instance_size=self.instance_size, mode=self.mode)
 
     def run_algorithm(self):
         """ Overriding the abstract method

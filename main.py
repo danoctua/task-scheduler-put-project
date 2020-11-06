@@ -99,11 +99,11 @@ def run_process(last_name, instance_size=None):
         print(f"Processed for instance of {instance_size}")
 
 
-def run_generate(last_name, instance_size=None):
+def run_generate(last_name, instance_size=None, mode=1):
     start = instance_size or 50
     finish = instance_size or 500
     step = 50
-    generator = Generator("data", last_name)
+    generator = Generator("data", last_name, mode=mode, engines_number=5)
     for instance_size in range(start, finish + 1, step):
         generator.run(instance_size)
 
