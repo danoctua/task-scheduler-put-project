@@ -68,9 +68,11 @@ class Engine:
                 tasks_sorted.append(next_task)
             self.order = [task.task_id for task in tasks_sorted]
         elif self.mode == 2:
-            self.order = [list() for _ in range(len(self.engines))]
-            for task in self.tasks:
-                self.order[(task.task_id - 1) % len(self.engines)].append(task.task_id)
+            # -- generating test output
+            # self.order = [list() for _ in range(len(self.engines))]
+            # for task in self.tasks:
+            #     self.order[(task.task_id - 1) % len(self.engines)].append(task.task_id)
+            pass
         return self.order
 
     def save_to_file(self, file_path):
