@@ -30,7 +30,8 @@ class MyCLI(CLI, ABC):
             finish = self.instance_size or 500 + 1
             for last_name_ in self.last_names:
                 for i_size in range(start, finish, 50):
-                    result = run_validate(last_name=last_name_, instance_size=i_size, test_mode=self.test_mode)
+                    result = run_validate(last_name=last_name_, instance_size=i_size,
+                                          test_mode=self.test_mode, mode=self.mode)
                     valid_ls.append(result[0])
                     equal_ls.append(result[1])
                     criteria_ls.append(result[2])
@@ -39,11 +40,12 @@ class MyCLI(CLI, ABC):
                         measures=[None for _ in range(len(valid_ls))],
                         errors=[None for _ in range(len(valid_ls))])
         if self.last_name:
-            run_validate(last_name=self.last_name, instance_size=self.instance_size, test_mode=self.test_mode)
+            run_validate(last_name=self.last_name, instance_size=self.instance_size,
+                         test_mode=self.test_mode, mode=self.mode)
 
     def process(self):
         """Overriding the abstract method"""
-        run_process(last_name=self.last_name, instance_size=self.instance_size)
+        run_process(last_name=self.last_name, instance_size=self.instance_size, mode=self.mode)
 
     def generate(self):
         """Overriding the abstract method"""

@@ -14,7 +14,7 @@ class Generator:
             print(f"No such directory: {dir_path}. Creating...")
             os.mkdir(dir_path)
             print(f"Directory {dir_path} has been created")
-        self.engines = []
+        self.engines = [1.0]
         self.tasks = []
         self.last_name = last_name
         self.n = 0
@@ -24,11 +24,12 @@ class Generator:
     def run(self, n: int):
         self.n = n
         self.tasks = []
+        self.engines = [1.0]
         avr_time = 4
         delta = 4
         if self.mode == 2:
-            for x in range(self.engines_number):
-                self.engines.append(round(random.random() * 5, 2))
+            for x in range(self.engines_number - 1):
+                self.engines.append(max(1.0, round(random.random() * 3, 2)))
         for idx in range(1, n + 1):
             p_time = max(avr_time + random.randint(-delta, delta), 1)
             r_time = max(idx * avr_time + random.randint(-avr_time * delta, 0), 0)
