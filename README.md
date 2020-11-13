@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.com/daniktl/task-scheduler-put-project.svg?branch=main)](https://travis-ci.com/daniktl/task-scheduler-put-project)
 
-Task scheduler algorithm for 1 machine.
+Task scheduler algorithm for 1 machine (and other modes soon).
+
+###One-engine mode (mode 1)
 
 **Input data** should be in the next format:
 
@@ -30,6 +32,8 @@ where:
 
 - criterion
 - sequence of tasks processing by the machine 
+
+###Parallel engines mode (mode 2)
 
 ### Installation
 
