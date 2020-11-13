@@ -1,5 +1,7 @@
 # Tasks Scheduler
 
+[![Build Status](https://travis-ci.com/daniktl/task-scheduler-put-project.svg?branch=main)](https://travis-ci.com/daniktl/task-scheduler-put-project)
+
 Task scheduler algorithm for 1 machine.
 
 **Input data** should be in the next format:

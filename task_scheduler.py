@@ -5,7 +5,6 @@ from task_scheduler.cli import CLI
 import time
 from subprocess import check_output
 import pandas as pd
-import numpy as np
 import datetime
 
 
