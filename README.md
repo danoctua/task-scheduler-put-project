@@ -35,6 +35,8 @@ where:
 
 ### Parallel engines mode (mode 2)
 
+_coming soon..._
+
 ### Installation
 
 To install this algorithm - simply clone this repository. No additional packages required. 

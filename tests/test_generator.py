@@ -17,3 +17,15 @@ def test_generator_basic_mode_1(test_directory):
     generator.run(instance_size)
     assert len(generator.tasks) == instance_size
     assert all([isinstance(x, Task) for x in generator.tasks])
+
+
+def test_generator_basic_mode_2(test_directory):
+    instance_size = 500
+    engines_number = 5
+    last_name = "smith"
+    generator = Generator(dir_path=test_directory, engines_number=engines_number, last_name=last_name, mode=2)
+    generator.run(instance_size)
+    assert len(generator.tasks) == instance_size
+    assert len(generator.engines) == engines_number
+    assert 1.0 in generator.engines
+    assert all([isinstance(x, Task) for x in generator.tasks])
