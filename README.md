@@ -4,7 +4,7 @@
 
 Task scheduler algorithm for 1 machine (and other modes soon).
 
-###One-engine mode (mode 1)
+### One-engine mode (mode 1)
 
 **Input data** should be in the next format:
 
@@ -33,7 +33,7 @@ where:
 - criterion
 - sequence of tasks processing by the machine 
 
-###Parallel engines mode (mode 2)
+### Parallel engines mode (mode 2)
 
 ### Installation
 
