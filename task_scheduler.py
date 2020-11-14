@@ -98,7 +98,9 @@ class MyCLI(CLI, ABC):
                     timestamp = time.time() - start_time
                     print(f"Finished in {timestamp} sec")
                     if not error:
-                        result = run_validate(last_name=last_name_data_check, instance_size=instance_size)
+                        result = run_validate(last_name=last_name_data_check,
+                                              instance_size=instance_size,
+                                              mode=self.mode)
 
                 except Exception as exp:
                     error = exp

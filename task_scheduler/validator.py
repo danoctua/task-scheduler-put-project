@@ -56,11 +56,12 @@ class Validator:
                 # print(cur_time, task, result)
             self.value = result
         elif self.mode == 2:
-            for engine_queue in self.order:
+            for machine_idx, machine_queue in enumerate(self.order):
                 cur_time = 0
-                for task_id in engine_queue:
+                for task_id in machine_queue:
                     task = self.tasks[task_id - 1]
-                    cur_time = max(task.r_time + task.p_time, cur_time + task.p_time)
+                    cur_time = max(task.r_time + task.p_time * self.machines[machine_idx].speed,
+                                   cur_time + task.p_time * self.machines[machine_idx].speed)
                     result += (cur_time - task.r_time)
             result /= self.instance_size
         return round(result, 2)

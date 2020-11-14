@@ -22,11 +22,11 @@ def run_validate(last_name, instance_size=None, test_mode=False, mode=1):
             tasks, machines = upload_tasks(file.read(), mode=mode)
         out_path = f"data/out_{out_last_name}_{instance_size}.txt"
         with open(out_path, "r") as file:
-            lines = file.read().splitlines()
+            lines = file.read().split("\n")
             value = lines[0]
             order = "\n".join(lines[1:])
         validator = Validator(tasks=tasks, machines=machines, order=order, mode=mode)
-        result = validator.validate(int(value))
+        result = validator.validate(eval(value))
         # validator.show_description()
         print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
     if instance_size:
