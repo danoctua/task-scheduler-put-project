@@ -29,9 +29,12 @@ def test_basic_task_3():
 
 
 def test_basic_task_2():
-    task = None
-    try:
-        task = Task(4, 5)
-    except:
-        pass
-    assert not task
+    task = Task(4, 5)
+    assert not task.task_id
+
+
+def test_basic_task_input():
+    task = Task()
+    task.parse_input(1, "4 5")
+    assert task.p_time == 4
+    assert task.r_time == 5

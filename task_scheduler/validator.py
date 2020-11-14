@@ -1,28 +1,31 @@
 class Validator:
 
-    def __init__(self, tasks: list, order: str = "", separator=" ", engines=None, mode=1):
-        if engines is None:
-            engines = []
+    def __init__(self, tasks: list, order: str = "", separator=" ", machines=None, mode=1):
+        if machines is None:
+            machines = []
         self.tasks: list = tasks
         self.value = 0
         self.mode: int = mode
         self.order: list = []
-        self.engines = engines
+        self.machines = machines
+        self.instance_size = None
         if self.mode == 1:
             order_split = order.split(separator)
             for idx in order_split:
                 if idx.isdigit():
                     self.order.append(int(idx))
+            self.instance_size = len(self.order)
         elif self.mode == 2:
-            ls_order = order.splitlines()
-            if not self.engines or len(self.engines) != len(ls_order):
-                raise AttributeError("[ERROR] validator.py - Wrong engines list length. Try again")
+            ls_order = order.split("\n")
+            if not self.machines or len(self.machines) != len(ls_order):
+                raise AttributeError("[ERROR] validator.py - Wrong machines list length. Try again")
             for line in ls_order:
                 tmp = []
                 for idx in line.split(separator):
                     if idx.isdigit():
                         tmp.append(int(idx))
                 self.order.append(tmp)
+            self.instance_size = sum([len(x) for x in self.order])
 
     def show_description(self):
         if self.mode != 1:
@@ -54,11 +57,13 @@ class Validator:
             self.value = result
         elif self.mode == 2:
             for engine_queue in self.order:
+                cur_time = 0
                 for task_id in engine_queue:
                     task = self.tasks[task_id - 1]
                     cur_time = max(task.r_time + task.p_time, cur_time + task.p_time)
                     result += (cur_time - task.r_time)
-        return result
+            result /= self.instance_size
+        return round(result, 2)
 
     def validate(self, value: int) -> tuple:
         """

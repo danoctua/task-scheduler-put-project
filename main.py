@@ -19,13 +19,13 @@ def run_validate(last_name, instance_size=None, test_mode=False, mode=1):
     for instance_size in range(start, finish + 1, step):
         in_path = f"data/in_{last_name}_{instance_size}.txt"
         with open(in_path, "r") as file:
-            tasks, engines = upload_tasks(file.read(), mode=mode)
+            tasks, machines = upload_tasks(file.read(), mode=mode)
         out_path = f"data/out_{out_last_name}_{instance_size}.txt"
         with open(out_path, "r") as file:
             lines = file.read().splitlines()
             value = lines[0]
             order = "\n".join(lines[1:])
-        validator = Validator(tasks=tasks, engines=engines, order=order, mode=mode)
+        validator = Validator(tasks=tasks, machines=machines, order=order, mode=mode)
         result = validator.validate(int(value))
         # validator.show_description()
         print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
@@ -40,8 +40,8 @@ def run_process(last_name, instance_size=None, mode=1):
     for instance_size in range(start, finish + 1, step):
         test_path = f"data/in_{last_name}_{instance_size}.txt"
         with open(test_path, "r") as file:
-            tasks, engines = upload_tasks(file.read(), mode=mode)
-        engine = Engine(tasks=tasks, mode=mode, engines=engines)
+            tasks, machines = upload_tasks(file.read(), mode=mode)
+        engine = Engine(tasks=tasks, mode=mode, machines=machines)
         engine.run()
         engine.save_to_file(f"data/out_{last_name}_{instance_size}.txt")
         print(f"Processed for instance of {instance_size}")
@@ -51,7 +51,7 @@ def run_generate(last_name, instance_size=None, mode=1):
     start = instance_size or 50
     finish = instance_size or 500
     step = 50
-    generator = Generator("data", last_name, mode=mode, engines_number=5)
+    generator = Generator("data", last_name, mode=mode, machines_number=5)
     for instance_size in range(start, finish + 1, step):
         generator.run(instance_size)
 

@@ -23,8 +23,6 @@ class Task:
                 self.d_time = args[3]
                 if len(args) > 4:
                     self.w = args[4]
-        else:
-            raise AttributeError("Not enough attributes for task class (at least 3)")
 
     def parse_input(self, task_id, input_str, separator=" ", to_int=True):
         params = input_str.split(separator)

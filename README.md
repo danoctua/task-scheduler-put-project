@@ -33,7 +33,7 @@ where:
 - criterion
 - sequence of tasks processing by the machine 
 
-### Parallel engines mode (mode 2)
+### Parallel machines mode (mode 2)
 
 _coming soon..._
 

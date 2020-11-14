@@ -22,7 +22,7 @@ def test_validate():
     last_name = last_name_
     test_path = f"data/in_{last_name}_{instance_size}.txt"
     with open(test_path, "r") as file:
-        tasks, engines = upload_tasks(file.read())
+        tasks, machines = upload_tasks(file.read())
     validator = Validator(tasks=tasks, order=" ".join([str(x) for x in range(1, 50)]))
     result = validator.validate(169)
     print(result)
@@ -32,13 +32,13 @@ def test_engine(instance_size):
     last_name = "martsich"
     test_path = f"data/in_{last_name}_{instance_size}.txt"
     with open(test_path, "r") as file:
-        tasks, engines = upload_tasks(file.read())
-    engine = Engine(tasks=tasks)
+        tasks, machines = upload_tasks(file.read(), mode=2)
+    engine = Engine(tasks=tasks, mode=2, machines=machines)
     result = engine.run()
     engine.save_to_file(f"data/out_{last_name}_{instance_size}.txt")
-    validator = Validator(tasks=tasks, engines=engines, order=" ".join([str(x) for x in result]))
+    validator = Validator(tasks=tasks, machines=machines, mode=2, order="\n".join([" ".join([str(y) for y in x]) for x in result]))
     result = validator.calculate()
-    print(instance_size, sum([x.w for x in tasks]), result)
+    print(instance_size, result)
 
 
 def generate_test_out():
@@ -52,3 +52,7 @@ def generate_test_out():
 def generate_output():
     for instance_size in range(50, 501, 50):
         test_engine(instance_size)
+
+
+if __name__ == '__main__':
+    test_engine(400)
