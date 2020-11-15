@@ -174,8 +174,8 @@ class Engine:
                 return None, [], to_pass
 
         def get_machine_best_choice(task: Task) -> Machine:
-            machines = list(sorted(self.machines, key=lambda x: x.check_time_ready(task)))
-            return machines[0]
+            best_machine = min(self.machines, key=lambda x: x.check_time_ready(task))
+            return best_machine
 
         if self.mode == 1:
 
