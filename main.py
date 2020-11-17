@@ -27,7 +27,6 @@ def run_validate(last_name, instance_size=None, test_mode=False, mode=1):
             order = "\n".join(lines[1:])
         validator = Validator(tasks=tasks, machines=machines, order=order, mode=mode)
         result = validator.validate(eval(value))
-        # validator.show_description()
         print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
     if instance_size:
         return result
@@ -54,6 +53,7 @@ def run_generate(last_name, instance_size=None, mode=1):
     generator = Generator("data", last_name, mode=mode, machines_number=5)
     for instance_size in range(start, finish + 1, step):
         generator.run(instance_size)
+        generator.write_to_file()
 
 
 if __name__ == '__main__':

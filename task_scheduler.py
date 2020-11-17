@@ -80,12 +80,13 @@ class MyCLI(CLI, ABC):
                 error = None
                 try:
                     if os.path.isfile(f"codes/{last_name_}.py"):
+                        print("python")
                         python_command = "python" if sys.platform == "win32" else "python3"
                         res = check_output([python_command,
                                             f"codes/{last_name_}.py",
                                             f"data/in_{last_name_data_check}_{instance_size}.txt",
                                             f"data"])
-                        print(res.decode("utf-8"))
+                        # print(res.decode("utf-8"))
 
                     elif os.path.isfile(f"codes/{last_name_}.jar"):
                         res = check_output(["java",

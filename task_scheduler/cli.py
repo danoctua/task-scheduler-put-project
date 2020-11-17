@@ -38,8 +38,7 @@ class CLI:
                 print(exp)
                 exit(1)
         else:
-            print("ERROR!No mode provided. Provide using --mode [MODE_INT] argument and try again")
-            exit(1)
+            raise AttributeError("ERROR!No mode provided. Provide using --mode [MODE_INT] argument and try again")
         if "--size" in argv:
             try:
                 self.instance_size = int(argv[argv.index("--size") + 1])
@@ -65,18 +64,21 @@ class CLI:
             self.input_file = argv[-1]
             self.validate()
         elif "-g" in argv:
+            if not self.last_name and not self.last_names:
+                raise AttributeError("You have to provide last name or names list")
             self.input_file = argv[-1]
             self.generate()
         elif "-p" in argv:
+            if not self.last_name and not self.last_names:
+                raise AttributeError("You have to provide last name or names list")
             self.input_file = argv[-1]
             self.process()
         elif "-r" in argv:
+            if not self.last_name and not self.last_names:
+                raise AttributeError("You have to provide last name or names list")
             if len(argv) - argv.index("-r") - 1 == 2:
                 self.code_path = argv[-2]
                 self.input_file = argv[-1]
-            elif not self.last_name and not self.last_names:
-                print("ERROR! Wrong arguments: -r code_file input_file_name or --who last_name")
-                quit(-1)
             self.run_algorithm()
         else:
             print("UNKNOWN MODE\n"
@@ -85,8 +87,9 @@ class CLI:
                   "\t-v - validate instances *\n"
                   "\t-g - generate instances *\n"
                   "\t-r [code_path] [instance_file] - run algorithm with instance to process by engine\n\n"
-                  "* - MUST be specified last name \"--who [LAST_NAME]\" "
-                  "and COULD be specified instance size \"--size [SIZE]\"")
+                  "* - MUST be provided last name \"--who [LAST_NAME]\" "
+                  "and COULD be provided instance size \"--size [SIZE]\"")
+            quit(1)
 
     @abc.abstractmethod
     def validate(self):

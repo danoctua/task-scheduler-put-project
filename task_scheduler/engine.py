@@ -118,7 +118,7 @@ class Engine:
             for machine in self.machines:
                 self.order.append(machine.get_tasks(id_only=True))
             self.result = round(self.result/self.instance_size, 2)
-            # -- generating test output
+            # -- generating test output | WRONG
             # self.order = [list() for _ in range(len(self.machines))]
             # for task in self.tasks:
             #     self.order[(task.task_id - 1) % len(self.machines)].append(task.task_id)
