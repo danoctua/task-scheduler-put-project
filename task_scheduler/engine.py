@@ -26,8 +26,11 @@ def upload_tasks(input_str: str, separator: str = " ", mode: int = 1) -> (list, 
         if lines[1]:
             tmp = lines[1].split(separator)
             for idx, i in enumerate(tmp):
-                fl_i = float(i)
-                machines.append(Machine(machine_id=idx, speed=fl_i))
+                try:
+                    fl_i = float(i)
+                    machines.append(Machine(machine_id=idx, speed=fl_i))
+                except:
+                    pass
         else:
             AttributeError("No machines speeds")
     lines = lines[start_tasks:]

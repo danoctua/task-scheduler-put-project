@@ -27,17 +27,25 @@ class MyCLI(CLI, ABC):
             criteria_ls = []
             start = self.instance_size or 50
             finish = self.instance_size or 500 + 1
+            errors_ls = []
             for last_name_ in self.last_names:
                 for i_size in range(start, finish, 50):
-                    result = run_validate(last_name=last_name_, instance_size=i_size,
-                                          test_mode=self.test_mode, mode=self.mode)
+                    error = ""
+                    try:
+                        result = run_validate(last_name=last_name_, instance_size=i_size,
+                                              test_mode=self.test_mode, mode=self.mode)
+                    except Exception as exp:
+                        print(exp)
+                        result = (False, False, "")
+                        error = exp
                     valid_ls.append(result[0])
                     equal_ls.append(result[1])
-                    criteria_ls.append(result[2])
+                    criteria_ls.append(str(result[2]).replace(".", ","))
+                    errors_ls.append(error)
             save_to_csv(last_names=self.last_names, calculated=criteria_ls, valid=valid_ls, equal=equal_ls,
                         instances=[self.instance_size] if self.instance_size else list(range(50, 501, 50)),
                         measures=[None for _ in range(len(valid_ls))],
-                        errors=[None for _ in range(len(valid_ls))])
+                        errors=errors_ls)
         if self.last_name:
             run_validate(last_name=self.last_name, instance_size=self.instance_size,
                          test_mode=self.test_mode, mode=self.mode)

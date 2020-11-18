@@ -23,7 +23,7 @@ class Generator:
         self.n = n
         self.tasks = []
         self.machines = [1.0]
-        avr_time = 4
+        avr_time = 6
         delta = 4
         if self.mode == 2:
             for x in range(self.machines_number - 1):
@@ -31,7 +31,7 @@ class Generator:
                 random.shuffle(self.machines)
         for idx in range(1, n + 1):
             p_time = max(avr_time + random.randint(-delta, delta), 1)
-            r_time = max(idx * avr_time // self.density + random.randint(-avr_time * delta, 0), 0)
+            r_time = max(idx * avr_time // self.density + random.randint(-avr_time // self.density * delta, 0), 0)
             if self.mode == 1:
                 d_time = max(r_time + p_time, idx * avr_time + random.randint(0, avr_time * delta))
                 w = random.randint(1, 6)

@@ -18,7 +18,10 @@ class Validator:
         elif self.mode == 2:
             ls_order = order.split("\n")
             if not self.machines or len(self.machines) != len(ls_order):
-                raise AttributeError("[ERROR] validator.py - Wrong machines list length. Try again")
+                if len(ls_order) > len(self.machines):
+                    ls_order = ls_order[:len(self.machines)]
+                else:
+                    raise AttributeError("[ERROR] validator.py - Wrong machines list length. Try again")
             for line in ls_order:
                 tmp = []
                 for idx in line.split(separator):
