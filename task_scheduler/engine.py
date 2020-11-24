@@ -61,32 +61,7 @@ class Engine:
 
         # This part of code below is LICENCED so you can't copy it into the project...
 
-        def get_next_one_machine(cur_tasks: list, to_pass: list, cur_time: int):
-            """
-            Get next task to schedule from task list for the mode 1
-            :param cur_tasks: list of Task objects to schedule
-            :param to_pass: list of tasks to pass (append to this list new tasks to pass and return)
-            :param cur_time: current time after scheduling previous tasks
-            :return: tuple : [0] - next task, [1] - list of tasks to schedule,
-                                [2] - list of tasks to pass and append to the end
-            """
-            if len(cur_tasks) < 1:
-                return None, [], to_pass
 
-            idx = 0
-            found = False
-            for idx, task in enumerate(cur_tasks):
-                if task.too_late(cur_time):
-                    to_pass.append(task)
-                    self.result += task.w
-                    continue
-                else:
-                    found = True
-                    break
-            if found:
-                return cur_tasks[idx], cur_tasks[idx + 1:], to_pass
-            else:
-                return None, [], to_pass
 
         def get_machine_best_choice(task: Task) -> Machine:
             best_machine = min(self.machines, key=lambda x:  x.check_time_ready(task))
@@ -97,11 +72,11 @@ class Engine:
             # sort by a) due time, b) weight (desc)
             tasks = list(sorted(self.tasks, key=lambda x: (x.d_time, -x.w)))
 
-            next_task, tasks, passed_tasks = get_next_one_machine(cur_tasks=tasks, to_pass=[], cur_time=self.cur_time)
+            next_task, tasks, passed_tasks = self.get_next_one_machine(cur_tasks=tasks, to_pass=[], cur_time=self.cur_time)
             self.cur_time += (next_task.p_time + next_task.r_time)
             tasks_scheduled = [next_task]
             while next_task:
-                next_task, tasks, passed_tasks = get_next_one_machine(cur_tasks=tasks, to_pass=passed_tasks, cur_time=self.cur_time)
+                next_task, tasks, passed_tasks = self.get_next_one_machine(cur_tasks=tasks, to_pass=passed_tasks, cur_time=self.cur_time)
                 # if no task - end loop
                 if not next_task:
                     continue
@@ -128,6 +103,36 @@ class Engine:
 
         return self.order
 
+    def get_next_one_machine(self, cur_tasks: list, to_pass: list, cur_time: int):
+        """
+        Get next task to schedule from task list for the mode 1
+        :param cur_tasks: list of Task objects to schedule
+        :param to_pass: list of tasks to pass (append to this list new tasks to pass and return)
+        :param cur_time: current time after scheduling previous tasks
+        :return: tuple : [0] - next task, [1] - list of tasks to schedule,
+                            [2] - list of tasks to pass and append to the end
+        """
+        if len(cur_tasks) < 1:
+            return None, [], to_pass
+
+        idx = 0
+        found = False
+        for idx, task in enumerate(cur_tasks):
+            if task.too_late(cur_time):
+                to_pass.append(task)
+                self.result += task.w
+                continue
+            else:
+                found = True
+                break
+        if found:
+            next_task = cur_tasks[idx]
+            # set current time after scheduling task
+            self.cur_time = max(self.cur_time + next_task.p_time, next_task.p_time + next_task.r_time)
+            return next_task, cur_tasks[idx + 1:], to_pass
+        else:
+            return None, [], to_pass
+
     def save_to_file(self, file_path):
         with open(file_path, "w") as file:
             result = f"{self.result}\n"
@@ -136,6 +141,15 @@ class Engine:
             elif self.mode == 2:
                 result += "\n".join([" ".join([str(x) for x in y]) for y in self.order])
             file.write(result)
+
+    def get_order_str(self):
+        if not self.order:
+            return ""
+        else:
+            if self.mode == 1:
+                return " ".join([str(x) for x in self.order])
+            elif self.mode == 2:
+                return "\n".join([" ".join([str(x) for x in y]) for y in self.order])
 
 
 if __name__ == '__main__':

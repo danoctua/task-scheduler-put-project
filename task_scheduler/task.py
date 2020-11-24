@@ -40,6 +40,9 @@ class Task:
                 self.w = params[3]
         return
 
+    def too_late(self, cur_time) -> bool:
+        return cur_time > self.d_time
+
     def __str__(self, separator: str = " ", idx_include: bool = False):
         if idx_include:
             result = f"{self.task_id}" + separator

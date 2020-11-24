@@ -42,10 +42,10 @@ class Validator:
             result.append(f"[#{task.r_time}..{cur_time - task.p_time}..{task.w}..{cur_time}..{task.d_time}]")
         print(" ".join(result))
 
-    def calculate(self) -> int:
+    def calculate(self):
         """
 
-        :return: calculated value of criteria
+        :return: calculated value of criteria (int or float depends on the mode)
         """
         cur_time = 0
         result = 0
