@@ -173,10 +173,6 @@ class Engine:
             else:
                 return None, [], to_pass
 
-        def get_machine_best_choice(task: Task) -> Machine:
-            best_machine = min(self.machines, key=lambda x: x.check_time_ready(task))
-            return best_machine
-
         if self.mode == 1:
 
             # sort by a) due time, b) weight (desc)
@@ -186,7 +182,8 @@ class Engine:
             self.cur_time += (next_task.p_time + next_task.r_time)
             tasks_scheduled = [next_task]
             while next_task:
-                next_task, tasks, passed_tasks = get_next_one_machine(cur_tasks=tasks, to_pass=passed_tasks, cur_time=self.cur_time)
+                next_task, tasks, passed_tasks = get_next_one_machine(cur_tasks=tasks, to_pass=passed_tasks,
+                                                                      cur_time=self.cur_time)
                 # if no task - end loop
                 if not next_task:
                     continue
@@ -198,20 +195,26 @@ class Engine:
 
             self.order = [task.task_id for task in tasks_scheduled]
         elif self.mode == 2:
-            tasks = list(sorted(self.tasks, key=lambda x: x.r_time))
-            for task in tasks:
-                machine = get_machine_best_choice(task)
+            tasks = list(sorted(self.tasks, key=lambda x: (x.r_time, -x.p_time)))
+            for task_num in range(len(tasks)):
+                tasks_to_sort = list(filter(lambda x: x.r_time <= tasks[0].r_time + tasks[0].p_time, tasks))
+                task, machine = self.get_machine_best_choice(tasks_to_sort)
                 machine.add_task(task)
                 self.result += machine.get_time_over()
+                tasks.remove(task)
             for machine in self.machines:
                 self.order.append(machine.get_tasks(id_only=True))
             self.result = round(self.result/self.instance_size, 2)
-            # -- generating test output
-            # self.order = [list() for _ in range(len(self.machines))]
-            # for task in self.tasks:
-            #     self.order[(task.task_id - 1) % len(self.machines)].append(task.task_id)
 
         return self.order
+
+    def get_machine_best_choice(self, tasks: list) -> (Task, Machine):
+        ls_times = []
+        for task in tasks:
+            best_machine = min(self.machines, key=lambda x: x.check_time_ready(task))
+            ls_times.append((best_machine, task, best_machine.check_time_ready(task)))
+        result = max(ls_times, key=lambda x: x[2]/(x[2] - task.r_time) if x[2] != task.r_time else 0)
+        return result[1], result[0]
 
     def save_to_file(self, file_path):
         with open(file_path, "w") as file:

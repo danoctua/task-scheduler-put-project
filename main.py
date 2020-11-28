@@ -32,18 +32,21 @@ def run_validate(last_name, instance_size=None, test_mode=False, mode=1):
         return result
 
 
-def run_process(last_name, instance_size=None, mode=1):
-    start = instance_size or 50
-    finish = instance_size or 500
-    step = 50
-    for instance_size in range(start, finish + 1, step):
-        test_path = f"data/in_{last_name}_{instance_size}.txt"
-        with open(test_path, "r") as file:
-            tasks, machines = upload_tasks(file.read(), mode=mode)
-        engine = Engine(tasks=tasks, mode=mode, machines=machines)
-        engine.run()
-        engine.save_to_file(f"data/out_{last_name}_{instance_size}.txt")
-        print(f"Processed for instance of {instance_size}")
+def run_process(last_name, last_names, instance_size=None, mode=1):
+    if last_name:
+        last_names = [last_name]
+    for last_name_ in last_names:
+        start = instance_size or 50
+        finish = instance_size or 500
+        step = 50
+        for i_size in range(start, finish + 1, step):
+            test_path = f"data/in_{last_name_}_{i_size}.txt"
+            with open(test_path, "r") as file:
+                tasks, machines = upload_tasks(file.read(), mode=mode)
+            engine = Engine(tasks=tasks, mode=mode, machines=machines)
+            engine.run()
+            engine.save_to_file(f"data/out_{last_name_}_{i_size}.txt")
+            print(f"Processed for instance of {i_size}")
 
 
 def run_generate(last_name, instance_size=None, mode=1):

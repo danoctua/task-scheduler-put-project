@@ -52,7 +52,7 @@ class MyCLI(CLI, ABC):
 
     def process(self):
         """Overriding the abstract method"""
-        run_process(last_name=self.last_name, instance_size=self.instance_size, mode=self.mode)
+        run_process(last_name=self.last_name, last_names=self.last_names, instance_size=self.instance_size, mode=self.mode)
 
     def generate(self):
         """Overriding the abstract method"""
@@ -78,7 +78,7 @@ class MyCLI(CLI, ABC):
         else:
             instances_to_check = list(range(50, 501, 50))
         for last_name_ in algo_to_check:
-            last_name_data_check = "martsich"
+            last_name_data_check = "lubawa"
             print("\n{:^50}\n".format(last_name_))
             for instance_size in instances_to_check:
                 print(f"# Processing {last_name_} code for instance of {instance_size}")
