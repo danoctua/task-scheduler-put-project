@@ -97,6 +97,10 @@ class Engine:
             # for task in self.tasks:
             #     self.order[(task.task_id - 1) % len(self.machines)].append(task.task_id)
 
+        elif self.mode == 3:
+            self.order = list(range(1, len(self.tasks) + 1))
+            self.result = 0
+
         return self.order
 
     def get_machine_best_choice(self, tasks: list) -> (Task, Machine):
@@ -145,7 +149,7 @@ class Engine:
     def save_to_file(self, file_path):
         with open(file_path, "w") as file:
             result = f"{self.result}\n"
-            if self.mode == 1:
+            if self.mode in (1, 3):
                 result += " ".join([str(x) for x in self.order])
             elif self.mode == 2:
                 result += "\n".join([" ".join([str(x) for x in y]) for y in self.order])

@@ -9,7 +9,7 @@ class Validator:
         self.order: list = []
         self.machines = machines
         self.instance_size = None
-        if self.mode == 1:
+        if self.mode in (1, 3):
             order_split = order.split(separator)
             for idx in order_split:
                 if idx.isdigit():

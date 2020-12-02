@@ -52,7 +52,8 @@ class MyCLI(CLI, ABC):
 
     def process(self):
         """Overriding the abstract method"""
-        run_process(last_name=self.last_name, last_names=self.last_names, instance_size=self.instance_size, mode=self.mode)
+        run_process(last_name=self.last_name, last_names=self.last_names,
+                    instance_size=self.instance_size, mode=self.mode)
 
     def generate(self):
         """Overriding the abstract method"""
@@ -78,7 +79,7 @@ class MyCLI(CLI, ABC):
         else:
             instances_to_check = list(range(50, 501, 50))
         for last_name_ in algo_to_check:
-            last_name_data_check = "lubawa"
+            last_name_data_check = "Jaskulski"
             print("\n{:^50}\n".format(last_name_))
             for instance_size in instances_to_check:
                 print(f"# Processing {last_name_} code for instance of {instance_size}")
@@ -88,7 +89,6 @@ class MyCLI(CLI, ABC):
                 error = None
                 try:
                     if os.path.isfile(f"codes/{last_name_}.py"):
-                        print("python")
                         python_command = "python" if sys.platform == "win32" else "python3"
                         res = check_output([python_command,
                                             f"codes/{last_name_}.py",
@@ -115,7 +115,7 @@ class MyCLI(CLI, ABC):
                     error = exp
                 valid_ls.append(result[0])
                 equal_ls.append(result[1])
-                criteria_ls.append(result[2])
+                criteria_ls.append(result[2].__str__().replace(",", "."))
                 measures_ls.append(timestamp.__str__().replace(".", ","))
                 errors_ls.append(error)
             clean_after(out_dir="data", last_name_to_clean=last_name_data_check)
