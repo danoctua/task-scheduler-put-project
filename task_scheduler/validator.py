@@ -112,7 +112,7 @@ class Validator:
         """
         result = self.calculate()
         flat_order = flat_list(self.order)
-        return len(set(flat_order)) == len(flat_order), result == value, result
+        return len(set(flat_order)) == len(flat_order) == len(self.tasks), result == value, result
 
 
 def flat_list(obj, full_list=[]) -> list:
