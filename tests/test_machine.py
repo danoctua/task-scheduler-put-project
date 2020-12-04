@@ -15,16 +15,9 @@ def test_machine_tasks(test_machine: Machine):
     assert test_machine.get_time_available() == 5.4
 
 
-def test_machine_get_tasks(test_machine: Machine):
-    ls_tasks = [Task(
-        x,
-        random.randint(1, 6),
-        random.randint(1, 6),
-        random.randint(1, 6),
-        random.randint(1, 6)
-    ) for x in range(1, 51)]
-    tasks = list(sorted(ls_tasks, key=lambda x: x.r_time))
+def test_machine_get_tasks(test_machine: Machine, test_tasks: list):
+    tasks = list(sorted(test_tasks, key=lambda x: x.r_time))
     for task in tasks:
         test_machine.add_task(task)
     assert isinstance(test_machine.get_tasks(id_only=True), list)
-    assert len(test_machine.get_tasks(id_only=True)) == len(ls_tasks)
+    assert len(test_machine.get_tasks(id_only=True)) == len(test_tasks)

@@ -1,6 +1,18 @@
+from task_scheduler.machine import Machine
+
+
 class Validator:
 
     def __init__(self, tasks: list, order: str = "", separator=" ", machines=None, mode=1):
+        """
+
+        :param tasks: list of tasks type of task_scheduler.Task
+        :type tasks: list(task_scheduler.Task)
+        :param order: 
+        :param separator:
+        :param machines:
+        :param mode:
+        """
         if machines is None:
             machines = []
         self.tasks: list = tasks
@@ -31,8 +43,12 @@ class Validator:
             self.instance_size = sum([len(x) for x in self.order])
 
     def show_description(self):
+        """
+        Show description of current order
+        :return:
+        """
         if self.mode != 1:
-            print("Implemented only for the first mode and debug.")
+            print("Implemented only for the first mode.")
             return
         result = []
         cur_time = 0
@@ -44,7 +60,7 @@ class Validator:
 
     def calculate(self):
         """
-
+        Calculate criteria for current data set
         :return: calculated value of criteria (int or float depends on the mode)
         """
         cur_time = 0
@@ -67,6 +83,25 @@ class Validator:
                                    cur_time + task.p_time * self.machines[machine_idx].speed)
                     result += (cur_time - task.r_time)
             result /= self.instance_size
+        elif self.mode == 3:
+            for machine_id, machine in enumerate(self.machines):
+                if not isinstance(machine, Machine):
+                    pass
+                for order_id, task_id in enumerate(self.order):
+                    task = self.tasks[task_id - 1]
+                    if machine_id == 0:
+                        machine.add_task(
+                            task,
+                            p_time=task.p_times[machine_id]
+                        )
+                    else:
+                        machine.add_task(
+                            task=task,
+                            min_start_time=self.machines[machine_id-1].get_time_available(order_id),
+                            p_time=task.p_times[machine_id]
+                        )
+                    result += max(0, machine.get_time_available() - task.d_time) * task.w
+            result /= sum(x.w for x in self.tasks)
         return round(result, 2)
 
     def validate(self, value: int) -> tuple:

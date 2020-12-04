@@ -33,6 +33,9 @@ def upload_tasks(input_str: str, separator: str = " ", mode: int = 1) -> (list, 
                     pass
         else:
             AttributeError("No machines speeds")
+    elif mode == 3:
+        for idx in range(3):
+            machines.append(Machine(machine_id=idx))
     lines = lines[start_tasks:]
     for idx in range(1, n+1):
         new_task = Task()
