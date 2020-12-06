@@ -100,7 +100,8 @@ class Validator:
                             min_start_time=self.machines[machine_id-1].get_time_available(order_id),
                             p_time=task.p_times[machine_id]
                         )
-                    result += max(0, machine.get_time_available() - task.d_time) * task.w
+                    if machine_id == len(self.machines) - 1:
+                        result += max(0, machine.get_time_available() - task.d_time) * task.w
             result /= sum(x.w for x in self.tasks)
         return round(result, 2)
 
