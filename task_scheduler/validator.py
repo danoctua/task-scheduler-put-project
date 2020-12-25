@@ -1,4 +1,6 @@
 from task_scheduler.machine import Machine
+from task_scheduler.task import Task
+from task_scheduler import CLIColors
 
 
 class Validator:
@@ -22,6 +24,7 @@ class Validator:
         self.machines = machines
         self.instance_size = None
         if self.mode in (1, 3):
+            order = order.strip()
             order_split = order.split(separator)
             for idx in order_split:
                 if idx.isdigit():
@@ -48,7 +51,7 @@ class Validator:
         :return:
         """
         if self.mode != 1:
-            print("Implemented only for the first mode.")
+            print(CLIColors.FAIL + "Implemented only for the first mode.")
             return
         result = []
         cur_time = 0
@@ -88,7 +91,7 @@ class Validator:
                 if not isinstance(machine, Machine):
                     pass
                 for order_id, task_id in enumerate(self.order):
-                    task = self.tasks[task_id - 1]
+                    task: Task = self.tasks[task_id - 1]
                     if machine_id == 0:
                         machine.add_task(
                             task,
@@ -100,8 +103,9 @@ class Validator:
                             min_start_time=self.machines[machine_id-1].get_time_available(order_id),
                             p_time=task.p_times[machine_id]
                         )
-                    if machine_id == len(self.machines) - 1:
-                        result += max(0, machine.get_time_available() - task.d_time) * task.w
+                    # if machine_id == len(self.machines) - 1:
+                        # result = max(0, machine.get_time_available() - task.d_time) * task.w
+            result = self.machines[-1].get_time_over_weighted()
             result /= sum(x.w for x in self.tasks)
         return round(result, 2)
 
@@ -116,7 +120,15 @@ class Validator:
         return len(set(flat_order)) == len(flat_order) == len(self.tasks), result == value, result
 
 
-def flat_list(obj, full_list=[]) -> list:
+def flat_list(obj: list, full_list: list = None) -> list:
+    """
+    Recursion to make multi-dimensional array flat
+    :param obj: multi-dimensional array
+    :param full_list: recurrent store value
+    :return: flat list
+    """
+    if not full_list:
+        full_list = []
     if not isinstance(obj, list):
         return full_list + [obj]
     for x in obj:

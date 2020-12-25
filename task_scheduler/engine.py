@@ -101,10 +101,49 @@ class Engine:
             #     self.order[(task.task_id - 1) % len(self.machines)].append(task.task_id)
 
         elif self.mode == 3:
-            self.order = list(range(1, len(self.tasks) + 1))
-            self.result = 0
+            self.order = []
+            tasks_sorted = sorted(self.tasks, key=lambda x: (x.d_time, -x.w))
+            while tasks_sorted:
+                task = self.get_flow_shop_best_choice(tasks_sorted)
+                # task = tasks_sorted[0]
+                tasks_sorted.remove(task)
+                self.order.append(task.task_id)
+                for machine_id, machine in enumerate(self.machines):
+                    machine.add_task(
+                        task,
+                        p_time=task.p_times[machine_id],
+                        min_start_time=self.machines[machine_id - 1].get_time_available() if machine_id else 0)
+            result = self.machines[-1].get_time_over_weighted()
+            result /= sum(task.w for task in self.tasks)
+            self.result = round(result, 2)
+
+            # validator = Validator(tasks=self.tasks,
+            #                       machines=[Machine(machine_id=x, speed=1) for x in range(len(self.machines))],
+            #                       order=" ".join([str(_) for _ in self.order]),
+            #                       mode=3)
+            # print(self.result, validator.calculate())
+            # -- generating test output
+            # self.order = list(range(1, len(self.tasks) + 1))
+            # self.result = 0
 
         return self.order
+
+    def get_flow_shop_best_choice(self, tasks: list) -> Task:
+        times = []
+        times_ready = [[] for _ in range(len(self.machines))]
+        for task_nr in range(0, min(len(tasks), 10)):
+            task = tasks[task_nr]
+            time = 0
+            for machine_idx, machine in enumerate(self.machines):
+                time = machine.check_time_ready(
+                    p_time=task.p_times[machine_idx],
+                    task=task,
+                    min_start_time=times_ready[machine_idx-1][task_nr] if machine_idx > 0 else 0
+                )
+                times_ready[machine_idx].append(time)
+            times.append((task, (time - task.d_time) * task.w))
+        chosen: Task = max(times, key=lambda x: (x[1], x[0].w))[0]
+        return chosen
 
     def get_machine_best_choice(self, tasks: list) -> (Task, Machine):
         """

@@ -1,6 +1,7 @@
 from task_scheduler.generator import Generator
 from task_scheduler.validator import Validator
 from task_scheduler.engine import Engine, upload_tasks
+from task_scheduler import CLIColors
 import os, sys
 
 cur_dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -27,7 +28,13 @@ def run_validate(last_name, instance_size=None, test_mode=False, mode=1):
             order = "\n".join(lines[1:])
         validator = Validator(tasks=tasks, machines=machines, order=order, mode=mode)
         result = validator.validate(eval(value))
-        print(f"Validation data/out_{last_name}_{instance_size}.txt: {result}")
+        if not (result[0] or result[1]):
+            prepend = CLIColors.FAIL
+        elif result[0] and result[1]:
+            prepend = CLIColors.OKGREEN
+        else:
+            prepend = CLIColors.WARNING
+        print(prepend + f"--- Validation data/out_{last_name}_{instance_size}.txt:\t{result}" + CLIColors.ENDC)
     if instance_size:
         return result
 
@@ -46,7 +53,7 @@ def run_process(last_name, last_names, instance_size=None, mode=1):
             engine = Engine(tasks=tasks, mode=mode, machines=machines)
             engine.run()
             engine.save_to_file(f"data/out_{last_name_}_{i_size}.txt")
-            print(f"Processed for instance of {i_size}")
+            print(CLIColors.OKGREEN + f"--- Processed for instance of {i_size}:\t{engine.result}" + CLIColors.ENDC)
 
 
 def run_generate(last_name, instance_size=None, mode=1):

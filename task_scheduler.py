@@ -2,6 +2,7 @@ from abc import ABC
 
 from main import *
 from task_scheduler.cli import CLI
+from task_scheduler import CLIColors
 import time
 from subprocess import check_output
 import pandas as pd
@@ -79,10 +80,10 @@ class MyCLI(CLI, ABC):
         else:
             instances_to_check = list(range(50, 501, 50))
         for last_name_ in algo_to_check:
-            last_name_data_check = "Jaskulski"
-            print("\n{:^50}\n".format(last_name_))
+            last_name_data_check = "martsich"
+            print("\n{:-^50}".format(last_name_.upper()))
             for instance_size in instances_to_check:
-                print(f"# Processing {last_name_} code for instance of {instance_size}")
+                print(CLIColors.BOLD + f"--- Processing {last_name_} code for instance of {instance_size}" + CLIColors.ENDC)
                 start_time = time.time()
                 result = (None, None, None)
                 timestamp = None
@@ -105,7 +106,6 @@ class MyCLI(CLI, ABC):
                     else:
                         error = "No code file"
                     timestamp = time.time() - start_time
-                    print(f"Finished in {timestamp} sec")
                     if not error:
                         result = run_validate(last_name=last_name_data_check,
                                               instance_size=instance_size,
@@ -113,15 +113,18 @@ class MyCLI(CLI, ABC):
 
                 except Exception as exp:
                     error = exp
+                if error:
+                    print(CLIColors.FAIL + f"{last_name_}: {error}" + CLIColors.ENDC)
                 valid_ls.append(result[0])
                 equal_ls.append(result[1])
-                criteria_ls.append(result[2].__str__().replace(",", "."))
+                criteria_ls.append(result[2].__str__().replace(".", ",") if result[2] else "")
                 measures_ls.append(timestamp.__str__().replace(".", ","))
                 errors_ls.append(error)
             clean_after(out_dir="data", last_name_to_clean=last_name_data_check)
 
         save_to_csv(last_names=algo_to_check, instances=instances_to_check, measures=measures_ls,
                     valid=valid_ls, equal=equal_ls, calculated=criteria_ls, errors=errors_ls)
+        print(CLIColors.OKGREEN + f"--- Successfully finished!" + CLIColors.ENDC)
 
 
 def clean_after(out_dir, last_name_to_clean):
@@ -129,7 +132,7 @@ def clean_after(out_dir, last_name_to_clean):
         path = os.path.join(out_dir, f"out_{last_name_to_clean}_{instance_size}.txt")
         if os.path.isfile(path):
             os.remove(path)
-    print(f"Cleaned for {last_name_to_clean}")
+    print(CLIColors.OKBLUE + f"--- Cleaned out instances for {last_name_to_clean}" + CLIColors.ENDC)
 
 
 def save_to_csv(last_names, instances, measures, valid, equal, calculated, errors):
@@ -147,11 +150,10 @@ def save_to_csv(last_names, instances, measures, valid, equal, calculated, error
             ])
     df = pd.DataFrame(data=result,
                       columns=["last name", 'instance size', 'time [s]', 'valid', 'correct', 'criteria', "errors"])
-    print(df)
     filename = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + ".csv"
     path = os.path.join("test_results", filename)
     df.to_csv(path)
-    print(f"Result has been saved to the {path}")
+    print(CLIColors.OKGREEN + f"--- Result has been saved to the {path}" + CLIColors.ENDC)
     return
 
 

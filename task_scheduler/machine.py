@@ -25,14 +25,13 @@ class Machine:
         :param p_time: for the mode 3 - provide task p_time for this machine
         :return:
         """
-        if min_start_time is None:
-            min_start_time = 0
         if p_time is None:
             p_time = task.p_time
             if p_time is None:
                 raise AttributeError("Processing time hasn't been provided")
-        self.tasks.append(task)
         self.cur_time = self.check_time_ready(task, min_start_time, p_time)
+        self.tasks.append(task)
+
         self.times_finished.append(self.cur_time)
 
     def get_time_available(self, order_task_id: int = None):
@@ -78,3 +77,16 @@ class Machine:
         if not self.tasks:
             return 0
         return self.cur_time - self.tasks[-1].r_time
+
+    def get_time_over_weighted(self) -> float:
+        result = 0.0
+        for task_nr, task in enumerate(self.tasks):
+            result += (max(0, self.times_finished[task_nr] - task.d_time) * task.w)
+        return result
+
+    def get_due_time(self):
+        ls = []
+        for task_nr, task in enumerate(self.tasks):
+            ls.append("{} {} {}".format(task.d_time, self.times_finished[task_nr],
+                                       max(0, self.times_finished[task_nr] - task.d_time) * task.w))
+        return ls
