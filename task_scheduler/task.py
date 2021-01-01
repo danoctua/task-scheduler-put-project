@@ -30,6 +30,7 @@ class Task:
         """
         if not input_str:
             return
+        input_str = input_str.strip()
         params = input_str.split(separator)
         if len(params) < 2:
             raise AttributeError("Not enough parameters in line")
